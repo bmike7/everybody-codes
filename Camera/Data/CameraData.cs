@@ -26,17 +26,15 @@ namespace Data
     
     public class CameraData: ICamaraData
     {
-        public IEnumerable<CameraRow> GetData()
-        {
-            return getData();
-        }
+        public IEnumerable<CameraRow> GetData() => getData();
 
         public IEnumerable<CameraRow> SearchName(string name)
-        {
-            throw new System.NotImplementedException();
-        }
+            => from row in getData()
+                where row.Name.Contains(name)
+                select row;
 
-        //https://stackoverflow.com/questions/59787783/why-cant-i-convert-from-system-io-streamwriter-to-csvhelper-iserializer
+        // https://joshclose.github.io/CsvHelper/getting-started/#reading-a-csv-file
+        // https://joshclose.github.io/CsvHelper/getting-started/
         private IEnumerable<CameraRow> getData()
         {
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -44,11 +42,14 @@ namespace Data
                 HasHeaderRecord = true,
                 HeaderValidated = null,
                 MissingFieldFound = null,
-                Delimiter = ";",
+                Delimiter = ";"
             };
+            // cheated a bit with the path 🙈
             using (var reader = new StreamReader("../Data/data/cameras-defb.csv"))
             using (var csv = new CsvReader(reader, config))
             {
+                // Linq on get records will load everything in memory
+                // if it would be on a BIG csv file maybe not the best solution
                 return csv.GetRecords<CameraRow>().ToList();
             }
         }
