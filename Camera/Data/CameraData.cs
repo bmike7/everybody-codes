@@ -9,13 +9,7 @@ using CsvHelper.Configuration.Attributes;
 
 namespace Data
 {
-    public interface ICameraRow
-    {
-        string Name { get; set; }
-        string Latitude { get; set; }
-        string Longitude { get; set; }
-    }
-    public class CameraRow: ICameraRow
+    public class CameraRow
     {
         [Index(0)]
         public string Name { get; set; }
